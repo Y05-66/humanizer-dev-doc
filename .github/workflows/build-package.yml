@@ -23,16 +23,19 @@ jobs:
           cache-dependency-path: humanizer/pyproject.toml
 
       - name: Install dependencies
+        shell: cmd
         run: |
           cd humanizer
           pip install -e ".[dev]"
           pip install "pyinstaller>=6.0"
 
       - name: Run tests before packaging
+        shell: cmd
         run: |
           .venv\Scripts\python.exe -m pytest humanizer/tests/ -v --tb=short
 
       - name: Build executables
+        shell: cmd
         run: |
           .venv\Scripts\python.exe -m PyInstaller --noconfirm build.spec
 
