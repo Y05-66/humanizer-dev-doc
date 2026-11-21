@@ -9,6 +9,7 @@ jobs:
   build:
     runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ['3.11', '3.12']
 
@@ -22,21 +23,26 @@ jobs:
           cache: 'pip'
           cache-dependency-path: humanizer/pyproject.toml
 
+      - name: Create virtual environment
+        shell: cmd
+        run: python -m venv .venv
+
       - name: Install dependencies
         shell: cmd
         run: |
-          pip install -e "humanizer[dev]"
-          pip install "pyinstaller>=6.0"
+          .venv\Scripts\python.exe -m pip install --upgrade pip
+          .venv\Scripts\python.exe -m pip install -e "humanizer[dev]"
+          .venv\Scripts\python.exe -m pip install "pyinstaller>=6.0"
 
       - name: Run tests before packaging
         shell: cmd
         run: |
-          python -m pytest humanizer/tests/ -v --tb=short
+          .venv\Scripts\python.exe -m pytest humanizer/tests/ -v --tb=short
 
       - name: Build executables
         shell: cmd
         run: |
-          python -m PyInstaller --noconfirm build.spec
+          .venv\Scripts\python.exe -m PyInstaller --noconfirm build.spec
 
       - name: Create ZIP package
         shell: cmd
