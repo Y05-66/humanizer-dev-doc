@@ -31,12 +31,12 @@ jobs:
       - name: Run tests before packaging
         shell: cmd
         run: |
-          .venv\Scripts\python.exe -m pytest humanizer/tests/ -v --tb=short
+          python -m pytest humanizer/tests/ -v --tb=short
 
       - name: Build executables
         shell: cmd
         run: |
-          .venv\Scripts\python.exe -m PyInstaller --noconfirm build.spec
+          python -m PyInstaller --noconfirm build.spec
 
       - name: Create ZIP package
         shell: cmd
