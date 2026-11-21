@@ -1,0 +1,370 @@
+# A 级禁用词与句式 —— 多源一致的硬信号，命中必须改
+# 来源：oh-story 禁用词表裁剪 + deai 纵深规则 + InkOS 疲劳词表思路扩展
+
+rules:
+  # ========== 句式模板（高频 AI 腔）==========
+  - id: BAN_A_01
+    severity: A
+    type: regex
+    pattern: '[一-龥]+，而是[一-龥]+'
+    suggestion: "改为直接陈述，删除'不是...而是...'框架"
+    note: "经典的 AI 过渡句式，人类写作较少使用如此工整的对仗否定"
+
+  - id: BAN_A_02
+    severity: A
+    type: regex
+    pattern: '，带着[^\s]{2,8}的'
+    suggestion: "删除'带着...'修饰语，直接用动词"
+    note: "高频 AI 腔，如'带着复杂的目光'、'带着苦涩的笑'"
+
+  - id: BAN_A_03
+    severity: A
+    type: regex
+    pattern: '(?:他|她|我|你|他们|此人|那人)[一-龥]{0,4}知道\S{1,30}'
+    suggestion: "将心理描述转化为行为或对话，避免直接说'知道/明白'"
+    note: "人类写作更倾向通过行动暗示认知状态"
+
+  - id: BAN_A_04
+    severity: A
+    type: regex
+    pattern: '(?:眼中|眸中|眼底)(?:闪过|浮现|划过|掠过)?(?:一丝|一抹|一点)'
+    suggestion: "删除眼部的程式化描写，用具体动作替代"
+    note: "网文 AI 高频特征，重复率极高"
+
+  - id: BAN_A_05
+    severity: A
+    type: regex
+    pattern: '(?:心中|心底|心间)(?:涌起|升起|荡起|泛起)?(?:一股|一阵|一丝)'
+    suggestion: "删除心理直述，通过身体反应或环境描写呈现情绪"
+    note: "与 BAN_A_04 同理，属于程式化情绪表达"
+
+  - id: BAN_A_06
+    severity: A
+    type: regex
+    pattern: '嘴角勾起(?:一抹|一丝|一个)?(?:弧度|笑容|笑意)?(?:的)?'
+    suggestion: "替换为具体的表情或动作描写"
+    note: "极度高频的 AI 面部表情模板"
+
+  - id: BAN_A_07
+    severity: A
+    type: literal
+    pattern: "深吸一口气"
+    suggestion: "可保留，但检查是否过度使用；如有更具体的紧张表现则替换"
+    note: "情绪描写的快捷方式，人类写作会更具体"
+
+  - id: BAN_A_08
+    severity: A
+    type: regex
+    pattern: '缓缓[地\s]*(?:走来|开口|说道|走近|抬手|举起|低下头)'
+    suggestion: "删除'缓缓'，让动作本身传递节奏感"
+    note: "副词冗余是 AI 文典型特征"
+
+  - id: BAN_A_09
+    severity: A
+    type: regex
+    pattern: '微微[地\s]*(?:一笑|点头|皱眉|挑眉|摇头|开口)'
+    suggestion: "删除'微微'，用更精确的动作描写替代"
+    note: "弱化副词的 AI 惯用法"
+
+  # ========== 一级疲劳禁用词（高置信度 AI 信号）============
+  # 来自 InkOS / oh-story 疲劳词表的顶层高频项
+  # 这些词在 AI 生成中文中出现频率远超人类写作者，几乎可作为身份指纹
+
+  # --- 情态类 ---
+  - id: BAN_A_WORD_MODAL_01
+    severity: A
+    type: literal
+    pattern: "不禁"
+    suggestion: "改为具体情绪触发的事件描写"
+    note: "情态类最高频 AI 词"
+
+  - id: BAN_A_WORD_MODAL_02
+    severity: A
+    type: literal
+    pattern: "仿佛"
+    suggestion: "删除或用具体比喻替代"
+    note: "作为一级禁用词——当'仿佛'表示不确定推测时必删；作明喻连接词时可保留"
+
+  - id: BAN_A_WORD_MODAL_03
+    severity: A
+    type: literal
+    pattern: "似乎"
+    suggestion: "根据上下文删除或改写为确定性表述"
+    note: "AI 在不确定时的常用填充词"
+
+  - id: BAN_A_WORD_MODAL_04
+    severity: A
+    type: literal
+    pattern: "好像"
+    suggestion: "区分明喻（可保留）和模糊推测（应删除）"
+    note: "需结合上下文判断，多数情况下是弱表达"
+
+  - id: BAN_A_WORD_MODAL_05
+    severity: A
+    type: literal
+    pattern: "显然"
+    suggestion: "删除或改为具体证据支撑的判断"
+    note: "AI 常用的确定性假象"
+
+  - id: BAN_A_WORD_MODAL_06
+    severity: A
+    type: literal
+    pattern: "无疑"
+    suggestion: "删除或用更强有力的证据替代"
+    note: "空洞强调，无实质信息量"
+
+  - id: BAN_A_WORD_MODAL_07
+    severity: A
+    type: literal
+    pattern: "不可否认"
+    suggestion: "删除，或直接陈述事实"
+    note: "先表态再论证是 AI 的典型套路结构"
+
+  # --- 时间过渡类 ---
+  - id: BAN_A_WORD_TIME_01
+    severity: A
+    type: literal
+    pattern: "顿时"
+    suggestion: "删除或用具体时间状语替代"
+    note: "时间过渡的 AI 惯用语"
+
+  - id: BAN_A_WORD_TIME_02
+    severity: A
+    type: literal
+    pattern: "猛然"
+    suggestion: "删除或改为更具体的动作描述"
+    note: "突然类的 AI 强化词"
+
+  - id: BAN_A_WORD_TIME_03
+    severity: A
+    type: literal
+    pattern: "随即"
+    suggestion: "删除，靠句子顺序自然体现先后关系"
+    note: "叙事衔接的程式化手段"
+
+  - id: BAN_A_WORD_TIME_04
+    severity: A
+    type: literal
+    pattern: "继而"
+    suggestion: "改为'然后'或直接合并句子"
+    note: "书面过度导致的 AI 腔"
+
+  - id: BAN_A_WORD_TIME_05
+    severity: A
+    type: literal
+    pattern: "旋即"
+    suggestion: "过于书面化的时间连接，替换为更自然的表达"
+    note: "AI 偏好的文言残留词"
+
+  # --- 动作副词类 ---
+  - id: BAN_A_WORD_ACTION_01
+    severity: A
+    type: literal
+    pattern: "立刻"
+    suggestion: "删除或用具体动作序列替代'立刻做某事'模式"
+    note: "机械推进情节的连接词"
+
+  - id: BAN_A_WORD_ACTION_02
+    severity: A
+    type: literal
+    pattern: "立刻又"
+    suggestion: "删除'立刻又'组合，分句表达"
+    note: "典型的 AI 动作连发句式"
+
+  # --- 表情神态类 ---
+  - id: BAN_A_WORD_FACE_01
+    severity: A
+    type: literal
+    pattern: "露出"
+    suggestion: "检查是否为'露出+表情'的套路组合，如是则替换为具体表情描写"
+    note: "'露出一丝微笑'类结构是重灾区"
+
+  - id: BAN_A_WORD_FACE_02
+    severity: A
+    type: literal
+    pattern: "浮现"
+    suggestion: "删除或改写，检查是否为'浮现+表情/神色'的模板"
+    note: "与 BAN_A_04/BAN_A_05 配套使用"
+
+  - id: BAN_A_WORD_FACE_03
+    severity: A
+    type: literal
+    pattern: "露出几分"
+    suggestion: "替换为具体表情动作"
+    note: "'露出几分复杂的神情'等套路的变体"
+
+  # --- 心理概述类 ---
+  - id: BAN_A_WORD_MIND_01
+    severity: A
+    type: literal
+    pattern: "暗自"
+    suggestion: "删除，或明确写出内心活动的内容"
+    note: "模糊心理活动的占位符"
+
+  - id: BAN_A_WORD_MIND_02
+    severity: A
+    type: literal
+    pattern: "默默"
+    suggestion: "删除或补充具体行为"
+    note: "与'暗自'类似，缺乏信息量"
+
+  - id: BAN_A_WORD_MIND_03
+    severity: A
+    type: literal
+    pattern: "暗自想"
+    suggestion: "直接写入内心独白内容，而非告知读者他在想"
+    note: "心理概述的占位用法"
+
+  - id: BAN_A_WORD_MIND_04
+    severity: A
+    type: literal
+    pattern: "心中暗道"
+    suggestion: "直接呈现内心活动"
+    note: "古风/网文 AI 高发区词汇"
+
+  - id: BAN_A_WORD_MIND_05
+    severity: A
+    type: literal
+    pattern: "心中一震"
+    suggestion: "具体描写震惊的身体反应或即时想法"
+    note: "程式化情绪反应的典型代表"
+
+  # --- 程度强调类 ---
+  - id: BAN_A_WORD_INTEN_01
+    severity: A
+    type: literal
+    pattern: "无比"
+    suggestion: "替换为具体描写或情境展现强度"
+    note: "空洞的程度强调"
+
+  - id: BAN_A_WORD_INTEN_02
+    severity: A
+    type: literal
+    pattern: "极其"
+    suggestion: "同上"
+    note: ""
+
+  - id: BAN_A_WORD_INTEN_03
+    severity: A
+    type: literal
+    pattern: "格外"
+    suggestion: "用情境展示而非直接标注程度"
+    note: ""
+
+  - id: BAN_A_WORD_INTEN_04
+    severity: A
+    type: literal
+    pattern: "分外"
+    suggestion: "删除或用具体细节替代"
+    note: ""
+
+  # --- 结论总结类（段末升华强信号）---
+  - id: BAN_A_WORD_CONCL_01
+    severity: A
+    type: literal
+    pattern: "总之"
+    suggestion: "删除或用具体结论替代空洞总结"
+    note: "总-分-总结构的标志性收尾词"
+
+  - id: BAN_A_WORD_CONCL_02
+    severity: A
+    type: literal
+    pattern: "总而言之"
+    suggestion: "同上"
+    note: ""
+
+  - id: BAN_A_WORD_CONCL_03
+    severity: A
+    type: literal
+    pattern: "毫无疑问"
+    suggestion: "删除或改为有证据支撑的断言"
+    note: ""
+
+  - id: BAN_A_WORD_CONCL_04
+    severity: A
+    type: literal
+    pattern: "毫无疑问的是"
+    suggestion: "同上"
+    note: ""
+
+  - id: BAN_A_WORD_CONCL_05
+    severity: A
+    type: literal
+    pattern: "不可否认的是"
+    suggestion: "同上"
+    note: ""
+
+  # --- 视角切换类 ---
+  - id: BAN_A_WORD_VIEW_01
+    severity: A
+    type: literal
+    pattern: "可想而知"
+    suggestion: "删除，或具体描写让人'可知'的现场细节"
+    note: "空洞的推断引导词"
+
+  - id: BAN_A_WORD_VIEW_02
+    severity: A
+    type: literal
+    pattern: "不难发现"
+    suggestion: "删除或用具体观察结果替代"
+    note: "论文腔/AI 腔的连接手法"
+
+  - id: BAN_A_WORD_VIEW_03
+    severity: A
+    type: literal
+    pattern: "令人惊讶的是"
+    suggestion: "直接描写事件，不需要旁白式预告"
+    note: "情感预告套话"
+
+  # ========== 二级句式（条件性 A，视语境）============
+  - id: BAN_A_CONDITIONAL_01
+    severity: A
+    type: regex
+    pattern: '[一-龥]+，一时间[一-龥]+'
+    suggestion: "删除'一时间'或替换为更具体的时间状语"
+    note: "时间模糊化的 AI 习惯"
+
+  - id: BAN_A_CONDITIONAL_02
+    severity: A
+    type: regex
+    pattern: '心中不由得(?:涌起|升起|泛起)'
+    suggestion: "删除'不由得'，直接写情绪"
+    note: "情感表达的套话模板"
+
+  # ========== 结构性大词堆砌（长文本核心 AI 指纹）===========
+  # 以下词语单独出现不一定是问题，但集中出现在同一段落即是强烈信号
+
+  - id: BAN_A_STRUCT_GRAND_01
+    severity: A
+    type: literal
+    pattern: "综上所述"
+    suggestion: "删除或用具体过渡替代"
+    note: "完全学术论文/AI 腔，记叙文中绝对不可出现"
+
+  - id: BAN_A_STRUCT_GRAND_02
+    severity: A
+    type: literal
+    pattern: "众所周知"
+    suggestion: "删除，人类作家不会在叙事中这样开场"
+    note: ""
+
+  - id: BAN_A_STRUCT_GRAND_03
+    severity: A
+    type: literal
+    pattern: "不可否认"
+    suggestion: "删除"
+    note: ""
+
+  - id: BAN_A_STRUCT_GRAND_04
+    severity: A
+    type: literal
+    pattern: "毋庸置疑"
+    suggestion: "删除"
+    note: ""
+
+  - id: BAN_A_STRUCT_GRAND_05
+    severity: A
+    type: literal
+    pattern: "显而易见"
+    suggestion: "删除"
+    note: ""

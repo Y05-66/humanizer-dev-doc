@@ -1,0 +1,44 @@
+name: Build Package
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: humanizer/pyproject.toml
+
+      - name: Install dependencies
+        run: |
+          cd humanizer
+          pip install -e ".[dev]"
+          pip install "pyinstaller>=6.0"
+
+      - name: Run tests before packaging
+        run: |
+          .venv\Scripts\python.exe -m pytest humanizer/tests/ -v --tb=short
+
+      - name: Build executables
+        run: |
+          .venv\Scripts\python.exe -m PyInstaller --noconfirm build.spec
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: humanizer-win-py${{ matrix.python-version }}
+          path: dist/
+          retention-days: 14

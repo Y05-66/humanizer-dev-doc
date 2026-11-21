@@ -1,0 +1,240 @@
+# B 级软信号 —— 单源/需语境判断，标记供 LLM 或用户审阅
+# 不强制修改，但提示存在 AI 风格倾向
+
+rules:
+  # ========== 弱化副词高频检测 ==========
+  - id: BAN_B_ADVERB_FREQ_01
+    severity: B
+    type: density
+    pattern: "非常"
+    threshold: 5.0      # 每千字超过 5 次才标记
+    suggestion: "替换为更具体的程度副词或删除"
+    note: "单一强度副词高频出现是 AI 文的典型特征"
+
+  - id: BAN_B_ADVERB_FREQ_02
+    severity: B
+    type: density
+    pattern: "十分"
+    threshold: 4.0
+    suggestion: "同上"
+    note: "与'非常'同类"
+
+  - id: BAN_B_ADVERB_FREQ_03
+    severity: B
+    type: density
+    pattern: "格外"
+    threshold: 3.0
+    suggestion: "考虑用具体情境展示程度，而非直接标注"
+    note: ""
+
+  - id: BAN_B_ADVERB_FREQ_04
+    severity: B
+    type: density
+    pattern: "更加"
+    threshold: 6.0
+    suggestion: "检查是否为比较级堆砌"
+    note: "网文 AI 的高频对比词"
+
+  # ========== 句式倾向（非绝对违规）==========
+  - id: BAN_B_PATTERN_01
+    severity: B
+    type: regex
+    pattern: '[一-龥]+让[^\n]{0,20}(?:心中|心里)(?:感到|觉得|涌上)'
+    suggestion: "尝试用直接的心理描写替代间接引语"
+    note: "间接引语在人类写作中也常见，但 AI 过度使用"
+
+  - id: BAN_B_PATTERN_02
+    severity: B
+    type: regex
+    pattern: '忍不住[^\n]{0,15}[，,]'
+    suggestion: "可保留，但连续出现时考虑精简"
+    note: "与 A 级'不禁'类似但语气较轻"
+
+  - id: BAN_B_PATTERN_03
+    severity: B
+    type: regex
+    pattern: '果然[，,][一-龥]+'
+    suggestion: "检查是否为预测-证实的机械结构"
+    note: "网文推进情节的高频连接词"
+
+  - id: BAN_B_PATTERN_04
+    severity: B
+    type: regex
+    pattern: '毕竟[一-龥]+，[一-龥]+'
+    suggestion: "因果连接词'毕竟'后接逗号是 AI 偏好"
+    note: "人类写作中也有，但 AI 密度更高"
+
+  # ========== 句内排比检测 ==========
+  - id: BAN_B_PARALLEL_01
+    severity: B
+    type: regex
+    pattern: '[一-龥]{2,4}着[一-龥]{2,4}，[一-龥]{2,4}着[一-龥]{2,4}，[一-龥]{2,4}着[一-龥]{2,4}'
+    suggestion: "三叠'X着，Y着，Z着'是典型的 AI 排比，尝试拆分或替换"
+    note: "人类写作中的排比重在变化，AI 倾向于机械重复结构"
+
+  # ========== 段落开头模式 ==========
+  - id: BAN_B_START_01
+    severity: B
+    type: regex
+    pattern: '^(?:然而|但是|可是)[，,][^\n]{20,}'
+    suggestion: "段落以转折词开头且较长，可能是 AI 的逻辑连接偏好"
+    note: "人类写作也会这样，但 AI 密度更高"
+
+  - id: BAN_B_START_02
+    severity: B
+    type: regex
+    pattern: '^(?:就在这时|忽然|突然)[，,][^\n]{20,}'
+    suggestion: "场景切换的词头过多会显得刻意"
+    note: "剧情推进的工具性连接词"
+
+  # ========== 空泛评价词 ==========
+  - id: BAN_B_VAGUE_01
+    severity: B
+    type: literal
+    pattern: "无比"
+    suggestion: "替换为具体描写"
+    note: "空洞的程度强调"
+
+  - id: BAN_B_VAGUE_02
+    severity: B
+    type: literal
+    pattern: "极其"
+    suggestion: "同上"
+    note: ""
+
+  - id: BAN_B_VAGUE_03
+    severity: B
+    type: literal
+    pattern: "难以言表"
+    suggestion: "用具体感受替代抽象概括"
+    note: "AI 在无法具体化时的兜底表达"
+
+  - id: BAN_B_VAGUE_04
+    severity: B
+    type: literal
+    pattern: "难以置信"
+    suggestion: "展示而非告知"
+    note: ""
+
+  # ========== 结构信号：逻辑连接词堆叠（中文 AI 结构性特征）==========
+  - id: BAN_B_CONSECUTIVE_CONNECTORS
+    severity: B
+    type: density
+    pattern: "然而"
+    threshold: 3.0
+    suggestion: "检查是否连续出现'然而/因此/所以/于是'等连接词；人类写作更倾向于通过语义衔接而非显式连接词推进"
+    note: "学术/AI 文的标志性特征：用连接词代替叙事节奏"
+
+  - id: BAN_B_CONSECUTIVE_CAUSAL
+    severity: B
+    type: density
+    pattern: "因此"
+    threshold: 4.0
+    suggestion: "同 BAN_B_CONSECUTIVE_CONNECTORS"
+    note: "因果连接词过多会让叙事失去流动感"
+
+  # ========== 结构信号：强行升华结尾（总-分-总模板）==========
+  - id: BAN_B_ELEVATION_OPENING
+    severity: B
+    type: regex
+    pattern: '^(?:纵观|回望|纵观整个|回顾|审视)[^\n]{5,40}(?:历史|时代|文明|岁月|人生|世界)'
+    suggestion: "避免以宏观视角强行开场；让故事自己说话"
+    note: "AI 偏爱的'宏大开场白'模式"
+
+  - id: BAN_B_ELEVATION_CLOSING
+    severity: B
+    type: regex
+    pattern: '(?:这|正是)?(?:是)?[^\n]{0,20}(?:一场|一次|一段)[^\n]{0,30}(?:深刻|动人|难忘)[^\n]{0,30}(?:的?)(?:启示|见证|缩影|旅程|洗礼|篇章)'
+    suggestion: "避免用抽象大词收尾；让人物和情节自然结束"
+    note: "'总-分-总'结构的最后一环——强行升华"
+
+  - id: BAN_B_GRAND_NOUNS_CLUSTER
+    severity: B
+    type: density
+    pattern: "命运"
+    threshold: 3.0
+    suggestion: "'命运''时代''历史''文明'等宏大名词密集出现是 AI 写作标志之一"
+    note: "单字频次超过阈值时标记"
+
+  # ========== 结构信号：过渡段冗余（A→B 之间的解释性废话）==========
+  - id: BAN_B_EXPLANATORY_TRANSITION
+    severity: B
+    type: regex
+    pattern: '(?:他|她|我|众人|他们)[一-龥]{0,6}(?:想到|意识到|明白|知道|意识到|忽然懂得)(?:了|道|出来)?[^\n]*$'
+    suggestion: "将心理概述替换为具体动作或环境细节"
+    note: "过渡性心理概述句，切断叙事节奏"
+
+  # ========== 新增：InkOS 风格的结构性深度信号 ==============
+
+  # --- 段首三连排比（AI 扩写标志）---
+  - id: BAN_B_RITUAL_TRIPLE_01
+    severity: B
+    type: regex
+    pattern: '^(?:随着|[,\s]*(?:着|起来))[^\n]{0,20}[^\n]*[，,][^\n]{0,20}[^\n]*[，,][^\n]{0,20}[^\n]*[，,][^\n]{0,30}'
+    suggestion: "开篇三段并列铺垫是 AI 写作的标志性套路，尝试直接从动作或对话切入"
+    note: "如'随着XX的发展，伴随着XX的变化，经过XX的过程……'这种三段铺陈"
+
+  # --- "的"字过度密集（修饰链过长）---
+  - id: BAN_B_MODIFIER_CHAIN
+    severity: B
+    type: regex
+    pattern: '[^\n]{10,}(?:的){3,}[^\n]{10,}'
+    suggestion: "连续三个'的'字修饰链是人类写作很少出现的结构，建议拆分重组"
+    note: "AI 喜欢构造'xx的yy的zz的描述'这类嵌套定语"
+
+  # --- 冒号前的铺垫过远（AI 悬疑感制造术）---
+  - id: BAN_B_HANGING_COLON
+    severity: B
+    type: regex
+    pattern: '[^\n]{40,}：[^\n]{1,30}$'
+    suggestion: "过长铺垫后再跟冒号引出，是人类写作中少见的 AI 悬念结构"
+    note: "AI 喜欢在句尾突然加'：XXX'来制造突兀的转折感"
+
+  # --- 反问三连（AI 论证强化器）---
+  - id: BAN_B_RHETORIC_TRIPLE
+    severity: B
+    type: regex
+    pattern: '[？?][^\n]{3,20}[？?][^\n]{3,20}[？?][^\n]{3,20}[？?]'
+    suggestion: "连续三个以上问句是 AI 强化说服感的典型手法，建议改为陈述"
+    note: "人类写作者偶尔使用反问，但连续多个极为罕见"
+
+  # --- 段末金句型升华（AI 感悟输出模式）---
+  - id: BAN_B_GOLDEN_LINE_CLOSING
+    severity: B
+    type: regex
+    pattern: '[^\n]{0,30}(?:这才|终于|这才明白|这才懂得|这才知道|这才意识到)[^\n]{0,40}(?:道理|真谛|意义|价值|重要性|本质)'
+    suggestion: "用一句话突然点破'真理'是 AI 的经典收尾手法，建议删去或融入情节自然揭示"
+    note: "如'这一刻他才真正明白了坚持的意义'这类顿悟句"
+
+  # --- "不禁/忍不住" 近义替换密度 ===
+  - id: BAN_B_MODAL_SYNONYM_FREQ
+    severity: B
+    type: density
+    pattern: "忍不住"
+    threshold: 3.0
+    suggestion: "'忍不住'与'不禁'是同义对，混合出现往往暴露 AI 拼凑痕迹"
+    note: "检测到此类词高频时，说明作者在反复使用同一情感表达模式"
+
+  # --- 形容词冗余叠加 ===
+  - id: BAN_B_ADJ_STACK
+    severity: B
+    type: regex
+    pattern: '[^，。\n]{0,5}(?:巨大|强烈|深深|无限|永恒)[^\n]{0,10}(?:的)[^\n]{0,5}(?:力量|光芒|气息|震撼|冲击力)'
+    suggestion: "一连串抽象大词+的+名词，是人类作家极少采用的 AI 修辞模式"
+    note: "如'巨大的冲击波'、'深深的震撼'、'无限的力量'等搭配"
+
+  # --- 环境描写作为情绪放大器 ===
+  - id: BAN_B_ENV_EMOTION_LINK
+    severity: B
+    type: regex
+    pattern: '(?:天空|阳光|微风|空气|夜色|风)[^\n]{0,15}(?:变得|似乎|变得越发)?[^\n]{0,10}(?:格外|异常|变得)?(?:凝重|压抑|温柔|静谧|肃杀)'
+    suggestion: "用环境变化来暗示情绪是 AI 最常用的桥段，尝试直接进入人物内心活动"
+    note: "典型如'天空变得格外凝重'、'空气中弥漫着紧张的气息'"
+
+  # --- 段落末尾的时间锚点（AI 章节闭合模式）===
+  - id: BAN_B_CHAPTER_END_MARKER
+    severity: B
+    type: regex
+    pattern: '(?:夜深了|天亮了|太阳落下|月亮升起|夜幕降临|东方泛起鱼肚白)[。.]?$'
+    suggestion: "用自然景象闭合段落/章节是 AI 的典型章法，人类写作有更丰富的手段"
+    note: "这是AI写长篇小说最容易暴露的模式之一"

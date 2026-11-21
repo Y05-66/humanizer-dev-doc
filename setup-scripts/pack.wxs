@@ -1,0 +1,22 @@
+using System;
+using Wix;
+
+var project = new Project("Humanizer", new Product(
+    id: "*",
+    name: "Humanizer · 去AI味",
+    manufacturer: "Humanizer Contributors",
+    version: "0.1.0.0",
+    upgradeCode: "a3f7c8e1-9b2d-4e5f-a1c3-d6e8f0a2b4c6"
+));
+
+var mainDir = new Dir(@"%ProgramFiles6432%\Humanizer",
+    new File(new WinExeFileInfo("humanizer-web.exe")),
+    new File(new WinExeFileInfo("humanizer.exe")),
+    new Files("humanizer/**/*"),
+    new File("README.md"),
+    new File("LICENSE")
+);
+
+project.AddElement(mainDir);
+
+WixRunner.Run(project);

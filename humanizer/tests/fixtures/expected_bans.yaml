@@ -1,0 +1,22 @@
+"""预期的 A 级规则命中结果 —— 用于快照测试。"""
+
+expected_hits: list[dict] = [
+    {"rule_id": "BAN_A_05", "severity": "A", "pattern_contains": "心中涌起"},
+    {"rule_id": "BAN_A_01", "severity": "A", "pattern_contains": "不是"},
+    {"rule_id": "BAN_A_04", "severity": "A", "pattern_contains": "眼中闪过"},
+    {"rule_id": "BAN_A_06", "severity": "A", "pattern_contains": "嘴角勾起"},
+    {"rule_id": "BAN_A_07", "severity": "A", "pattern_contains": "深吸一口气"},
+    {"rule_id": "BAN_A_08", "severity": "A", "pattern_contains": "缓缓"},
+    {"rule_id": "BAN_A_09", "severity": "A", "pattern_contains": "微微"},
+    {"rule_id": "BAN_A_WORD_MODAL_01", "severity": "A", "pattern_contains": "不禁"},
+    {"rule_id": "BAN_A_WORD_MODAL_02", "severity": "A", "pattern_contains": "仿佛"},
+    {"rule_id": "BAN_A_WORD_ACTION_01", "severity": "A", "pattern_contains": "顿时"},
+    {"rule_id": "BAN_A_WORD_TIME_03", "severity": "A", "pattern_contains": "随即"},
+    {"rule_id": "BAN_A_WORD_MIND_01", "severity": "A", "pattern_contains": "暗自"},
+    {"rule_id": "BAN_A_CONDITIONAL_01", "severity": "A", "pattern_contains": "一时间"},
+    {"rule_id": "BAN_A_CONDITIONAL_02", "severity": "A", "pattern_contains": "不由得"},
+    {"rule_id": "BAN_A_WORD_MODAL_03", "severity": "A", "pattern_contains": "似乎"},
+    {"rule_id": "BAN_A_WORD_FACE_01", "severity": "A", "pattern_contains": "露出"},
+    {"rule_id": "BAN_A_WORD_FACE_02", "severity": "A", "pattern_contains": "浮现"},
+    {"rule_id": "BAN_A_WORD_MODAL_04", "severity": "A", "pattern_contains": "好像"},
+]

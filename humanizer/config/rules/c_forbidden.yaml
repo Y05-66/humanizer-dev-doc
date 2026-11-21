@@ -1,0 +1,67 @@
+# C 级禁动清单 —— 实测站不住或行业规范，一律不碰
+# 这些特征不应被当作 AI 信号处理，误伤会导致文本失去风味
+
+items:
+  # ========== 语法结构（均为合法汉语表达） ==========
+  - id: C_GRAMMAR_PASSIVE
+    category: grammar
+    description: "被动句（被/叫/让+动词）"
+    rationale: "中文被动句是合法的叙事手段，尤其在网文中用于强调承受者视角"
+
+  - id: C_GRAMMAR_METAPHOR
+    category: grammar
+    description: "比喻（明喻、暗喻、借喻）"
+    rationale: "比喻是人类写作的核心修辞，禁止比喻会产生干瘪文本"
+
+  - id: C_GRAMMAR_QUESTION
+    category: grammar
+    description: "问句（设问、反问）"
+    rationale: "问句是自然的叙事节奏调节手段"
+
+  - id: C_GRAMMAR_CAUSAL
+    category: grammar
+    description: "强因果连接（因为...所以...）"
+    rationale: "因果逻辑是人类推理的自然表达，不应被压制"
+
+  # ========== 叙事手法 ==========
+  - id: C_NARRATIVE_FORESHADOW
+    category: narrative
+    description: "伏笔回收"
+    rationale: "伏笔是小说创作的基本手法，AI 检测器对其无稳定识别能力"
+
+  - id: C_NARRATIVE_PROTAGONIST_AGENCY
+    category: narrative
+    description: "主角主动性描写"
+    rationale: "网文主角的主动行为是人类创作的核心特征，不应视为 AI 指纹"
+
+  # ========== 修辞与风格 ==========
+  - id: C_STYLE_SENTENCE_LENGTH_VAR
+    category: style
+    description: "句长离散度正常波动"
+    rationale: "句长变化是自然写作的标志，不应被视为异常"
+
+  - id: C_STYLE_DUANZAO
+    category: style
+    description: "短句密集（非连续≤5字碎片）"
+    rationale: "短句在某些文体（武侠、悬疑）中是正常的节奏选择"
+
+  - id: C_STYLE_PARENTHESIS
+    category: style
+    description: "括号注释与旁白"
+    rationale: "网文中大量使用括号插入信息和吐槽，是文体特征"
+
+  # ========== 词汇层面 ==========
+  - id: C_WORD_REPETITION_INTENTIONAL
+    category: word
+    description: "有意的人物重复称呼"
+    rationale: "人物对话中重复称呼是自然的交流特征"
+
+  - id: C_WORD_ONOMATOPOEIA
+    category: word
+    description: "拟声词（砰、轰、嗖等）"
+    rationale: "拟声词是叙事增色手段，非 AI 专属"
+
+  - id: C_WORD_DIALECT
+    category: word
+    description: "方言词汇"
+    rationale: "方言增强地域真实感，是人类作者的特征之一"

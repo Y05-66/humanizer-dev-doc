@@ -1,0 +1,58 @@
+# Humanizer 默认配置
+
+app:
+  name: "Humanizer"
+  version: "0.1.0"
+
+# 运行模式：detect / clean / refactor
+default_mode: detect
+
+# 规则文件路径（相对于项目根目录）
+rules:
+  bans_a: "config/rules/bans_a.yaml"
+  bans_b: "config/rules/bans_b.yaml"
+  c_forbidden: "config/rules/c_forbidden.yaml"
+
+# 统计指标阈值
+metrics:
+  burstiness:
+    ai_typical_max: 0.3
+    human_target_min: 0.5
+  ttr:
+    ai_range: [0.15, 0.25]
+    human_range: [0.30, 0.45]
+  perplexity_simple:
+    ai_range: [20, 50]
+    human_range: [60, 120]
+
+# LLM 改写配置
+llm:
+  base_url: "https://apihub.agnes-ai.com/v1"
+  model: "agnes-2.5-flash"
+  api_key_env: "LLM_API_KEY"
+  temperature: 1.2
+  max_tokens: 2048
+  timeout_seconds: 60
+  max_retries: 3
+
+# 改写策略
+rewrite:
+  # 清理模式：只处理 A 级规则
+  clean_mode:
+    max_structural_actions: 0
+    require_a_reduction_percent: 80
+  # 重构模式：允许结构调整
+  refactor_mode:
+    max_structural_actions: 5
+    require_a_reduction_percent: 90
+
+# 输出设置
+output:
+  encoding: "utf-8"
+  backup_original: false  # 是否在输出目录创建 .bak 备份
+  log_format: "json"     # json | text
+
+# 批量处理
+batch:
+  concurrent: 1          # 当前不支持并行，预留
+  skip_existing: true

@@ -1,0 +1,70 @@
+# Python / Virtualenv
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+venv/
+.venv/
+.env/
+.env
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Cache directories (lint/typecheck)
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
+
+# Database files — contains real user passwords, never commit
+humanizer.db
+identifier.sqlite
+*.sqlite
+*.sqlite3
+
+# Compiled assets (if generated)
+*.js_check_sub.js
+nul
+
+# Windows thumbnails and metadata
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS metadata
+.DS_Store
+
+# PyInstaller build artifacts
+build/
+dist/
+*.spec.bak
+
+# Python cache files
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.hypothesis/
+
+# Secrets that should never be committed
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+*.bak
