@@ -6,15 +6,30 @@
 
 Run from repo root:
     pyinstaller --noconfirm build.spec
+
+Run from humanizer/ subdir (as used by CI):
+    cd humanizer && python -m PyInstaller --noconfirm ../build.spec
 """
 
 import sys
 from pathlib import Path
 from PyInstaller.building.build_main import Analysis, PYZ, EXE
 
-repo = Path(__file__).resolve().parent if '__file__' in dir() else Path.cwd()
-pkg  = repo / "humanizer"
+_repo_root_candidate = Path(__file__).resolve().parents[1] if '__file__' in dir() else Path.cwd()
+if _repo_root_candidate.name != "humanizer":
+    # Running from repo root: /repo/build.spec → parent is /repo
+    REPO_ROOT = _repo_root_candidate
+else:
+    # Running from humanizer/ subdir: /repo/humanizer/build.spec → grandparent is /repo
+    REPO_ROOT = _repo_root_candidate.parent
+
+pkg  = REPO_ROOT / "humanizer"
 src  = pkg / "src"
+
+assert src.is_dir(), (
+    f"Cannot locate humanizer/src at {src}. "
+    f"Run PyInstaller from repo root with 'pyinstaller --noconfirm build.spec'"
+)
 
 HIDDEN_IMPORTS = [
     # Package internals
@@ -71,12 +86,12 @@ ASSETS = [
     (str(pkg / "tests" / "fixtures" / "human_sample_01.md"),        "humanizer/tests/fixtures"),
     (str(pkg / "tests" / "fixtures" / "expected_bans.yaml"),        "humanizer/tests/fixtures"),
     # Documentation
-    (str(repo / "README.md"), "."),
-    (str(repo / "LICENSE"),   "."),
+    (str(REPO_ROOT / "README.md"), "."),
+    (str(REPO_ROOT / "LICENSE"),   "."),
 ]
 
-if (repo / ".env.example").exists():
-    ASSETS.append((str(repo / ".env.example"), "."))
+if (REPO_ROOT / ".env.example").exists():
+    ASSETS.append((str(REPO_ROOT / ".env.example"), "."))
 
 
 def _make_analysis(entry: str, name: str, console: bool) -> tuple[Analysis, EXE]:
